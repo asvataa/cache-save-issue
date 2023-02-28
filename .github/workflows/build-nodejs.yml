@@ -26,9 +26,10 @@ jobs:
             node_modules
           key: node-modules-${{ hashFiles('package-lock.json', 'yarn.lock') }}-${{ env.CACHE_NAME }}
 
-      - run: ls -la
+      - run: ls -la && exit 1
 
       - uses: actions/upload-artifact@v3
+        if: ${{ always() }}
         with:
           name: my-artifact
           path: runner-diagnostic-logs/
