@@ -1,0 +1,37 @@
+name: Build nodejs application
+
+on:
+  workflow_dispatch:
+
+jobs:
+  container-save-two-cpu:
+    runs-on: ubuntu-latest
+    container:
+      image: node:18-alpine
+      options: --cpus 2
+    steps:
+      - run: |
+          apk update
+          apk add git>=2.18 tar
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT }}
+          submodules: 'recursive'
+
+      - name: Restore modules cache
+        uses: actions/cache/restore@v3
+        id: node-modules-cache-restore
+        with:
+          path: |
+            node_modules
+          key: node-modules-${{ hashFiles('package-lock.json', 'yarn.lock') }}
+
+      - run: npm ci --force
+
+      - uses: actions/cache/save@v3
+        if: steps.node-modules-cache-restore.outputs.cache-hit != 'true'
+        id: node-modules-cache
+        with:
+          path: |
+            node_modules
+          key: node-modules-${{ hashFiles('package-lock.json', 'yarn.lock') }}
