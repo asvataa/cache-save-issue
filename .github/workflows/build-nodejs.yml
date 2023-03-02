@@ -6,11 +6,11 @@ on:
 jobs:
   container-save-two-cpu:
     runs-on: ubuntu-latest
+    env:
+      CACHE_NAME: "cpu-two"
     container:
       image: node:18-alpine
       options: --cpus 2
-      env:
-        CACHE_NAME: "cpu-two"
     steps:
       - run: |
           apk update
@@ -30,10 +30,10 @@ jobs:
 
   container-save-without-cpu-tune:
     runs-on: ubuntu-latest
+    env:
+      CACHE_NAME: "cpu-one"
     container:
       image: node:18-alpine
-      env:
-        CACHE_NAME: "cpu-one"
     steps:
       - run: |
           apk update
